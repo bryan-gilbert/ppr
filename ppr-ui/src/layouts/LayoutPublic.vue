@@ -10,7 +10,7 @@
 
 </template>
 
-<script>
+<script lang="ts">
     import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
     import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 

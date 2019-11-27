@@ -8,7 +8,7 @@
       div
         v-btn(class="form-primary-btn", @click="letUserIn", color="primary") Let me in!
 </template>
-<script>
+<script lang="ts">
     import AuthHelper from '@/utils/auth-helper'
 
     export default {

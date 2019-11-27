@@ -19,7 +19,7 @@
       v-btn(class="form-primary-btn", @click="logOut", color="primary") Let me out!
 </template>
 
-<script>
+<script lang="ts">
     import AuthHelper from '@/utils/auth-helper'
 
     export default {

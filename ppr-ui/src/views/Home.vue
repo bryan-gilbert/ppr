@@ -22,8 +22,7 @@
     v-container(v-if="featureTwo")
       div Feature two is active
 </template>
-<script>
-    import AuthHelper from '@/utils/auth-helper'
+<script lang="ts">
     import AppData from '@/utils/app-data'
 
     export default {

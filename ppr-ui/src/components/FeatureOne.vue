@@ -3,7 +3,7 @@
     v-checkbox(id="featureOne", class="f-check", v-model="featureOneFlag", :label="fOneToggleLabel")
 </template>
 
-<script>
+<script lang="ts">
     import AppData from '@/utils/app-data'
     export default {
         data: function () {

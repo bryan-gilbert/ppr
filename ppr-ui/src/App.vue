@@ -7,12 +7,11 @@
     feature-two
 </template>
 
-<script>
+<script lang="ts">
     const APP_PATH = process.env.VUE_APP_PATH || 'app-path-foo-bar'
     const DefaultLayout = 'public'
-    import AppData from '@/utils/app-data'
-    import FeatureOne from '@/components/FeatureOne'
-    import FeatureTwo from '@/components/FeatureTwo'
+    import FeatureOne from '@/components/FeatureOne.vue'
+    import FeatureTwo from '@/components/FeatureTwo.vue'
 
     export default {
         components: { FeatureOne, FeatureTwo },
