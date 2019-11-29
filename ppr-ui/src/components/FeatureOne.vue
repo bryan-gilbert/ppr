@@ -11,9 +11,9 @@
   export default createComponent({
     setup(): Data {
       const featureOneFlag = inject("featureOne", ref(false))
-      const fOneToggleLabel = computed(() => featureOneFlag.value ? 'Disable F One' : ' Enable F One')
+      const fOneToggleLabel = computed((): string => featureOneFlag.value ? 'Disable F One' : ' Enable F One')
 
-      watch(featureOneFlag, (flag) => AppData.features.featureOne = flag)
+      watch(featureOneFlag, (flag): void => { AppData.features.featureOne = flag })
 
       return {featureOneFlag, fOneToggleLabel}
     }

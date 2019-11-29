@@ -10,11 +10,11 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+  import {createComponent} from "@vue/composition-api";
   import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
   import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 
-  @Component({
+  export default createComponent({
     name: 'LayoutUser',
     components: {
       SbcHeader,
@@ -22,5 +22,4 @@
     },
     inject: ['authApiUrl', 'originUrl'],
   })
-  export default class LayoutUser extends Vue { }
 </script>

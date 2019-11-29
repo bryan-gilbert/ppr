@@ -39,9 +39,9 @@
       provide("featureOne", ref(AppData.features.featureOne))
       provide("featureTwo", ref(AppData.features.featureTwo))
 
-      const layout = computed(() => (router.currentRoute.meta.layout || DefaultLayout) + '-layout')
+      const layout = computed((): string => (router.currentRoute.meta.layout || DefaultLayout) + '-layout')
 
-      onErrorCaptured((err, vm, info) => {
+      onErrorCaptured((err, vm, info): void => {
         console.log('App errorCaptured', err)
         // err: error trace
         // vm: component in which error occured
