@@ -8,52 +8,51 @@
 </template>
 
 <script lang="ts">
-    const APP_PATH = process.env.VUE_APP_PATH || 'app-path-foo-bar'
-    const DefaultLayout = 'public'
-    import FeatureOne from '@/components/FeatureOne.vue'
-    import FeatureTwo from '@/components/FeatureTwo.vue'
+  import {computed, createComponent, onErrorCaptured, provide, ref} from "@vue/composition-api";
+  import {Data} from "@vue/composition-api/dist/component";
+  import {provideRouter, useRouter} from "@/router/router";
+  import FeatureOne from '@/components/FeatureOne.vue'
+  import FeatureTwo from '@/components/FeatureTwo.vue'
+  import AppData from "@/utils/app-data";
 
-    export default {
-        components: { FeatureOne, FeatureTwo },
+  const APP_PATH = process.env.VUE_APP_PATH || 'app-path-foo-bar'
+  const DefaultLayout = 'public'
 
-        data: function () {
-            return {
-                dataLoaded: false,
-            }
-        },
-        provide() {
-            return {
-                originUrl: this.origin,
-                authApiUrl: this.authApiUrl
-            }
-        },
-        computed: {
-            layout() {
-                return (this.$route.meta.layout || DefaultLayout) + '-layout'
-            },
-            origin() {
-                const root = window.location.origin || ''
-                const path = APP_PATH
-                return `${root}/${path}`
-            },
-            authAPIURL() {
-                return sessionStorage.getItem('AUTH_API_URL')
-            },
-        },
-        methods: {
-            setLoaded: function (flag) {
-                this.dataLoaded = flag
-            }
-        },
-        errorCaptured(err, vm, info) {
-            console.log('App errorCaptured', err)
-            // err: error trace
-            // vm: component in which error occured
-            // info: Vue specific error information such as lifecycle hooks, events etc.
-            // TODO: Perform any custom logic or log to server
-            // return false to stop the propagation of errors further to parent or global error handler
-        }
+  function origin(): string {
+    const root = window.location.origin || ''
+    const path = APP_PATH
+    return `${root}/${path}`
+  }
+
+  function authAPIURL(): string {
+    return sessionStorage.getItem('AUTH_API_URL')
+  }
+
+  export default createComponent({
+    components: { FeatureOne, FeatureTwo },
+    setup(): Data {
+      provideRouter()
+      const router = useRouter()
+
+      provide("originUrl", origin())
+      provide("authApiUrl", authAPIURL())
+      provide("featureOne", ref(AppData.features.featureOne))
+      provide("featureTwo", ref(AppData.features.featureTwo))
+
+      const layout = computed(() => (router.currentRoute.meta.layout || DefaultLayout) + '-layout')
+
+      onErrorCaptured((err, vm, info) => {
+        console.log('App errorCaptured', err)
+        // err: error trace
+        // vm: component in which error occured
+        // info: Vue specific error information such as lifecycle hooks, events etc.
+        // TODO: Perform any custom logic or log to server
+        // return false to stop the propagation of errors further to parent or global error handler
+      })
+
+      return { layout }
     }
+  })
 
 </script>
 

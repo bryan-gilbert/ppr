@@ -4,31 +4,22 @@
 </template>
 
 <script lang="ts">
-    import AppData from '@/utils/app-data'
-    export default {
-        data: function () {
-            return {
-                appData: AppData,
-                featureTwoFlag: AppData.features.featureTwo
-            }
-        },
-        computed: {
-            fOneToggleLabel() {
-                return this.featureTwoFlag ? 'Disable F Two' : ' Enable F Two'
-            },
-            featureTwo () {
-                return this.appData.features.featureTwo
-            }
-        },
+  import {computed, createComponent, inject, ref, watch} from "@vue/composition-api";
+  import {Data} from "@vue/composition-api/dist/component";
+  import AppData from '@/utils/app-data'
 
-        watch: {
-            featureTwoFlag: function (flag) {
-                this.appData.features.featureTwo = flag
-            }
-        },
+  export default createComponent({
+    setup(): Data {
+      const featureTwoFlag = inject("featureTwo", ref(false))
+      const fOneToggleLabel = computed(() => featureTwoFlag.value ? 'Disable F Two' : ' Enable F Two')
 
+      watch(featureTwoFlag, (flag) => AppData.features.featureTwo = flag)
+
+      return { featureTwoFlag, fOneToggleLabel }
     }
+  })
 </script>
+
 <style lang="scss">
 @import '@/assets/styles/theme.scss';
 

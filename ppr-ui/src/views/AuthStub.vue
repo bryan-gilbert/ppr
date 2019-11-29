@@ -8,23 +8,23 @@
       div
         v-btn(class="form-primary-btn", @click="letUserIn", color="primary") Let me in!
 </template>
+
 <script lang="ts">
-    import AuthHelper from '@/utils/auth-helper'
+  import {createComponent} from "@vue/composition-api";
+  import {Data} from "@vue/composition-api/dist/ts-api/component";
+  import AuthHelper from '@/utils/auth-helper'
 
-    export default {
-        components: {},
+  export default createComponent({
+    setup(): Data {
+      function letUserIn(): void {
+        AuthHelper.authFake()
+      }
 
-        data() {
-            return {}
-        },
+      function logOut(): void {
+        AuthHelper.authClear()
+      }
 
-        methods: {
-            letUserIn: function () {
-                AuthHelper.authFake()
-            },
-            logOut: function () {
-                AuthHelper.authClear()
-            }
-        }
+      return { letUserIn, logOut}
     }
+  })
 </script>

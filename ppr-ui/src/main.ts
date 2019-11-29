@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCompositionApi from '@vue/composition-api'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import App from '@/App.vue'
@@ -16,6 +17,7 @@ import './assets/styles/styles.scss'
 
 const opts = {iconfont: 'mdi'}
 
+Vue.use(VueCompositionApi)
 Vue.use(Vuetify)
 
 Vue.config.productionTip = false
