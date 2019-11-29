@@ -11,20 +11,17 @@
 </template>
 
 <script lang="ts">
-    import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
-    import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
+  import {Component, Vue} from "vue-property-decorator";
+  import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
+  import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 
-    export default {
-        name: 'LayoutPublic',
-        components: {
-            SbcHeader,
-            SbcFooter,
-        },
-        data: function () {
-            return {
-            }
-        },
-        inject: ['authApiUrl', 'originUrl'],
-    }
+  @Component({
+    name: 'LayoutPublic',
+    components: {
+      SbcHeader,
+      SbcFooter,
+    },
+    inject: ['authApiUrl', 'originUrl']
+  })
+  export default class LayoutPublic extends Vue {}
 </script>
-

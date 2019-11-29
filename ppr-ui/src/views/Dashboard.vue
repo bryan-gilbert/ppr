@@ -20,21 +20,18 @@
 </template>
 
 <script lang="ts">
-    import AuthHelper from '@/utils/auth-helper'
+  import {createComponent} from "@vue/composition-api";
+  import AuthHelper from '@/utils/auth-helper'
 
-    export default {
-        components: {},
+  export default createComponent({
+    setup(): object {
+      function logOut(): void {
+        AuthHelper.authClear()
+      }
 
-        data() {
-            return {}
-        },
-
-        methods: {
-            logOut: function () {
-                AuthHelper.authClear()
-            }
-        }
+      return { logOut }
     }
+  })
 </script>
 
 <style lang="scss" scoped>
