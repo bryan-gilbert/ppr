@@ -17,6 +17,7 @@ export default createComponent({
   setup() {
     const oUrl = inject('originUrl') as string
     const encoded = encodeURIComponent(oUrl)
+    console.debug('Send this encoded url to the common headers', encoded)
     return {
       encoded
     }
