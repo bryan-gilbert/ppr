@@ -1,8 +1,8 @@
 
 <template>
   <sbc-header
-    redirect-on-login-success="encoded"
-    redirect-on-logout="encode"
+    :redirect-on-login-success="encoded"
+    :redirect-on-logout="encoded"
   />
 </template>
 
