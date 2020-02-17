@@ -167,6 +167,24 @@ objects:
           regexp .*
           to {path} ${APP_PATH}/
       }
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    labels:
+      app: ppr
+      pprgroup: ${PPR_GROUP}
+      role: ${APP_NAME}
+    name: ${APP_CONFIG}
+  data:
+    configuration.json: |+
+      {
+        "API_URL":        "${API_URL}",
+        "AUTH_API_URL":   "${AUTH_URL}",
+        "AUTH_URL":       "${AUTH_URL}",
+        "LAUNCH_DARKLY_CLIENT_KEY": "${LAUNCH_DARKLY_CLIENT_KEY}",
+        "SENTRY_DSN":     "${SENTRY_DSN}",
+        "SENTRY_ENVIRONMENT": "${SENTRY_ENVIRONMENT}"
+      }
 parameters:
 - description: A label applied to all PPR UI related resources across tools and dev namespaces. Useful to use with oc get all -l apptag=ppr
   displayName: PPR group
@@ -198,7 +216,7 @@ parameters:
   name: APP_CONFIG
   required: true
   value: ppr-web-ui-config
-- description: Volume and config map name for caddy config
+- description: Name for caddy configuration
   displayName: Caddy config volume mount name
   name: CADDY_CONFIG
   required: true
@@ -207,4 +225,27 @@ parameters:
   displayName: APP Name
   name: APP_PATH
   required: false
-  value: /cooperatives/ppr
+  value: cooperatives/ppr
+- description: The full url to the PPR API
+  displayName: API_URL
+  name: API_URL
+  required: false
+  value: https://ppr-api-dev.pathfinder.gov.bc.ca/
+- description: The full url to the authentication service
+  displayName: AUTH_URL
+  name: AUTH_URL
+  required: false
+  value: https://dev.bcregistry.ca/cooperatives/auth/
+- description: The API key for the launch darkly service
+  displayName: LAUNCH_DARKLY_CLIENT_KEY
+  name: LAUNCH_DARKLY_CLIENT_KEY
+  required: true
+- description: The full url to the sentry service
+  displayName: SENTRY_DSN
+  name: SENTRY_DSN
+  required: true
+  value: https://c0eaad46fd3c490882ef1402713c7e6a@sentry.io/1834187
+- description: The environment tag sentry. E.g. Dev, yourName, Test, Prod etc.
+  displayName: Sentry Environment
+  name: SENTRY_ENVIRONMENT
+  value: Dev
