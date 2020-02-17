@@ -59,7 +59,7 @@ then
     HOST=dev.bcregistry.ca
     DEPLOY_TARGET=1rdehl-dev
     API_URL=https://ppr-api-dev.pathfinder.gov.bc.ca/
-    AUTH_URL=https://dev.bcregistry.ca/cooperatives/auth/
+    AUTH_API_URL=https://dev.bcregistry.ca/cooperatives/auth/
     LAUNCH_DARKLY_CLIENT_KEY=5ddc05785933410824ecf5ab
     SENTRY_DSN=https://c0eaad46fd3c490882ef1402713c7e6a@sentry.io/1834187
     SENTRY_ENVIRONMENT=Dev

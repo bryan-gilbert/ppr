@@ -179,9 +179,9 @@ objects:
     configuration.json: |+
       {
         "API_URL":        "${API_URL}",
-        "AUTH_API_URL":   "${AUTH_URL}",
-        "AUTH_URL":       "${AUTH_URL}",
+        "AUTH_API_URL":   "${AUTH_API_URL}",
         "LAUNCH_DARKLY_CLIENT_KEY": "${LAUNCH_DARKLY_CLIENT_KEY}",
+        "PAY_API_URL":   "${PAY_API_URL}",
         "SENTRY_DSN":     "${SENTRY_DSN}",
         "SENTRY_ENVIRONMENT": "${SENTRY_ENVIRONMENT}"
       }
@@ -224,17 +224,22 @@ parameters:
 - description: The sub-path to the web application
   displayName: APP Name
   name: APP_PATH
-  required: false
+  required: true
   value: cooperatives/ppr
 - description: The full url to the PPR API
   displayName: API_URL
   name: API_URL
-  required: false
+  required: true
   value: https://ppr-api-dev.pathfinder.gov.bc.ca/
 - description: The full url to the authentication service
-  displayName: AUTH_URL
-  name: AUTH_URL
-  required: false
+  displayName: AUTH_API_URL
+  name: AUTH_API_URL
+  required: true
+  value: https://dev.bcregistry.ca/cooperatives/auth/
+- description: The full url to the payment service
+  displayName: PAY_API_URL
+  name: PAY_API_URL
+  required: true
   value: https://dev.bcregistry.ca/cooperatives/auth/
 - description: The API key for the launch darkly service
   displayName: LAUNCH_DARKLY_CLIENT_KEY
