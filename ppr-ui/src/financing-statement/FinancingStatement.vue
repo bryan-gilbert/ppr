@@ -43,6 +43,15 @@
           @valid="validForm('registeringParty', $event)"
         />
       </v-container>
+      <form-section-header label="Secured Parties" />
+      <v-container>
+        <base-party
+          :value="value.securedParty"
+          :editing="editing"
+          @input="updateSecuredParty"
+          @valid="validForm('securedParty', $event)"
+        />
+      </v-container>
     </v-form>
   </v-card>
 </template>
@@ -53,10 +62,13 @@ import { FinancingStatementModel } from '@/financing-statement/financing-stateme
 import { FinancingStatementType, FinancingStatementTypeCodeList } from '@/financing-statement/financing-statement-type'
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import RegisteringParty from '@/components/RegisteringParty.vue'
+import BaseParty from '@/base-party/BaseParty.vue'
+import { BasePartyModel } from '@/base-party/base-party-model'
 import { PersonNameModel } from '@/components/person-name-model'
 
 export default createComponent({
   components: {
+    BaseParty,
     FormSectionHeader,
     RegisteringParty
   },
@@ -88,10 +100,11 @@ export default createComponent({
     */
     const validationState = {
       header: false,
-      registeringParty: false
+      registeringParty: false,
+      securedParty: false
     }
 
-    // Callback function for emitting form validity on the header section back to the parent.
+    // Callback function for emitting form validity on all sections back to the parent.
     function validForm(key: string, validElement: boolean) {
       validationState[key] = validElement
       const formValid = Object.values(validationState).reduce((accumulator, elementState) => {
@@ -100,20 +113,33 @@ export default createComponent({
       emit('valid', formValid)
     }
 
-    function updateRegisteringParty(newPerson: PersonNameModel): void {
+    function updateRegisteringParty(newValue: PersonNameModel): void {
       emit('input', new FinancingStatementModel(
         props.value.type,
         props.value.years,
-        newPerson // props.value.registeringParty
+        newValue, //props.value.registeringParty,
+        props.value.securedParty,
       ))
     }
+
+    function updateSecuredParty(newValue: BasePartyModel): void {
+      emit('input', new FinancingStatementModel(
+        props.value.type,
+        props.value.years,
+        props.value.registeringParty,
+        newValue // props.value.securedParty,
+      ))
+    }
+
 
     // Callback function for emitting model changes made to the FS life
     function updateLife(newLife: number): void {
       emit('input', new FinancingStatementModel(
         props.value.type,
         newLife, // props.value.life,
-        props.value.registeringParty))
+        props.value.registeringParty,
+        props.value.securedParty
+      ))
     }
 
     // Callback function for emitting model changes made to the FS type
@@ -121,13 +147,16 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         newType, //props.value.type,
         props.value.years,
-        props.value.registeringParty))
+        props.value.registeringParty,
+        props.value.securedParty
+      ))
     }
 
     return {
       fsTypes,
       life,
       lifeRules,
+      updateSecuredParty,
       updateRegisteringParty,
       updateLife,
       updateType,
