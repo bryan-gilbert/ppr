@@ -1,6 +1,11 @@
 <template>
   <v-card outlined>
     <v-form @input="validForm('header', $event)">
+      <form-section-header label="Secured Parties" />
+      <v-container>
+        <ppr-list>
+        </ppr-list>
+      </v-container>
       <form-section-header label="Type &amp; Duration" />
       <v-container>
         <div v-if="editing">
@@ -35,6 +40,7 @@
         </div>
       </v-container>
       <form-section-header label="Registering Party" />
+
       <v-container>
         <registering-party
           :value="value.registeringParty"
@@ -54,10 +60,12 @@ import { FinancingStatementType, FinancingStatementTypeCodeList } from '@/financ
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import RegisteringParty from '@/components/RegisteringParty.vue'
 import { PersonNameModel } from '@/components/person-name-model'
+import PprList from '@/views/PprList.vue'
 
 export default createComponent({
   components: {
     FormSectionHeader,
+    PprList,
     RegisteringParty
   },
   props: {
