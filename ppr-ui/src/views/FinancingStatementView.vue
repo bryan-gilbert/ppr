@@ -57,13 +57,12 @@
 import { createComponent, ref } from '@vue/composition-api'
 
 import FinancingStatement from '@/financing-statement/FinancingStatement.vue'
+import { BasePartyModel } from '@/base-party/base-party-model'
 import { FinancingStatementModel, FinancingStatementInterface } from '@/financing-statement/financing-statement-model'
 import { useLoadIndicator } from '@/load-indicator'
 import axiosAuth from '@/utils/axios-auth'
 import Config from '@/utils/config'
 
-import { BasePartyModel } from '@/base-party/base-party-model'
-import { PersonNameModel } from '@/components/person-name-model'
 
 export default createComponent({
   components: { FinancingStatement },
@@ -71,11 +70,14 @@ export default createComponent({
   setup(_, { root }) {
     const editing = ref(true)
     const formValid = ref(true)
-    const testBaseParty = new BasePartyModel()
-    const securedParties = [testBaseParty]
+    // create FS model with default type, years,
+    // registering party,
+    // secured party list with one secured party
+    const firstSecuredParty = new BasePartyModel()
+    const securedParties = [firstSecuredParty]
     const fstmt = new FinancingStatementModel(undefined, undefined, undefined, securedParties)
-
     const financingStatement = ref(fstmt)
+
     const loadIndicator = useLoadIndicator()
     const regNum = root.$route.query ? root.$route.query['regNum'] as string : undefined
 
