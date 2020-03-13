@@ -62,13 +62,20 @@ import { useLoadIndicator } from '@/load-indicator'
 import axiosAuth from '@/utils/axios-auth'
 import Config from '@/utils/config'
 
+import { BasePartyModel } from '@/base-party/base-party-model'
+import { PersonNameModel } from '@/components/person-name-model'
+
 export default createComponent({
   components: { FinancingStatement },
 
   setup(_, { root }) {
     const editing = ref(true)
     const formValid = ref(true)
-    const financingStatement = ref(new FinancingStatementModel())
+    const testBaseParty = new BasePartyModel()
+    const securedParties = [testBaseParty]
+    const fstmt = new FinancingStatementModel(undefined, undefined, undefined, securedParties)
+
+    const financingStatement = ref(fstmt)
     const loadIndicator = useLoadIndicator()
     const regNum = root.$route.query ? root.$route.query['regNum'] as string : undefined
 

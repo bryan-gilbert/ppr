@@ -1,10 +1,28 @@
 <template>
   <v-card outlined>
+    <div>
+      editing {{ editing }}
+      <v-btn
+        value="toggle"
+        @click="editing = !editing"
+      />
+    </div>
     <v-form @input="validForm('header', $event)">
       <form-section-header label="Secured Parties" />
       <v-container>
-        <ppr-list>
-        </ppr-list>
+        <v-list
+          v-for="(securedParty, index) in value.securedParties"
+          :key="index"
+        >
+          <ppr-list-item :editing="editing">
+            <base-party
+              :value="securedParty"
+              :editing="editing"
+              @input="updateSecuredParty($event, index)"
+              @valid="validForm('securedParty', $event)"
+            />
+          </ppr-list-item>
+        </v-list>
       </v-container>
       <form-section-header label="Type &amp; Duration" />
       <v-container>
@@ -60,12 +78,15 @@ import { FinancingStatementType, FinancingStatementTypeCodeList } from '@/financ
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import RegisteringParty from '@/components/RegisteringParty.vue'
 import { PersonNameModel } from '@/components/person-name-model'
-import PprList from '@/views/PprList.vue'
+import PprListItem from '@/views/PprListItem.vue'
+import BaseParty from '@/base-party/BaseParty.vue'
+import { BasePartyModel } from '@/base-party/base-party-model'
 
 export default createComponent({
   components: {
+    BaseParty,
     FormSectionHeader,
-    PprList,
+    PprListItem,
     RegisteringParty
   },
   props: {
@@ -124,6 +145,19 @@ export default createComponent({
         props.value.registeringParty))
     }
 
+    function updateSecuredParty(newSecuredParty: BasePartyModel, index: number): void {
+      console.log('new sp', newSecuredParty.businessName, index)
+      let sp = props.value.securedParties
+      console.log('sp as found', sp)
+      sp[index] = newSecuredParty
+      emit('input', new FinancingStatementModel(
+        props.value.type,
+        props.value.years,
+        props.value.registeringParty,
+        sp
+      ))
+    }
+
     // Callback function for emitting model changes made to the FS type
     function updateType(newType: FinancingStatementType): void {
       emit('input', new FinancingStatementModel(
@@ -137,6 +171,7 @@ export default createComponent({
       life,
       lifeRules,
       updateRegisteringParty,
+      updateSecuredParty,
       updateLife,
       updateType,
       validForm,

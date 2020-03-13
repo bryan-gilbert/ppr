@@ -98,6 +98,7 @@ export default createComponent({
 
     // Callback function for emitting the business name model change back to the parent.
     function updateBusiness(newValue: BusinessNameModel): void {
+      console.log('updateBusiness', newValue)
       emit('input', new BasePartyModel(
         newValue,
         props.value.personName

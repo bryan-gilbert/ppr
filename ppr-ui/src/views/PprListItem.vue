@@ -4,34 +4,52 @@
     class="ppr-list-item"
   >
     <v-list-item-content>
-      <v-list-item-title class="item-title">
-        <v-btn
-          icon
-          color="red"
-        >
-          <v-icon>mdi-close-circle-outline</v-icon>
-        </v-btn>
+      <v-list-item-title v-if="editing">
+        <v-container>
+          <v-row no-gutters>
+            <v-col md10>
+              Enter the contact information for the <strong>Secured Party</strong>
+            </v-col>
+            <v-col
+              md2
+              class="item-title"
+            >
+              <v-btn
+                icon
+                color="red"
+              >
+                <v-icon>mdi-close-circle-outline</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-list-item-title>
+      <v-list-item-subtitle v-if="editing">
+        How should we identify this <strong>Secured Party</strong>?
+      </v-list-item-subtitle>
       <v-container>
-        <base-party
-          :value="securedParty"
-          editing="true"
-          @input="updateSecuredParty"
-          @valid="validForm('securedParty', $event)"
-        />
+        <slot />
       </v-container>
     </v-list-item-content>
   </v-list-item>
 </template>
 
 <script lang="ts">
-import { createComponent,ref } from '@vue/composition-api'
+import { createComponent, ref } from '@vue/composition-api'
 import BaseParty from '@/base-party/BaseParty.vue'
 import { BasePartyModel } from '@/base-party/base-party-model'
 
 
 export default createComponent({
   components: { BaseParty },
+  props: {
+    editing: {
+      default: false,
+      required: false,
+      type: Boolean
+    }
+  },
+
   setup() {
 
     const securedParty = ref(new BasePartyModel())
