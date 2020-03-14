@@ -1,6 +1,9 @@
 <template>
   <v-card flat>
-    <v-form @input="validForm(HEADER, $event)">
+    <v-form
+      :class="{ invalid: !formIsValid }"
+      @input="emitValidity(HEADER, $event)"
+    >
       <v-radio-group
         v-if="editing"
         v-model="partyType"
@@ -27,7 +30,7 @@
         :editing="editing"
         :value="value.businessName"
         @input="updateBusiness($event)"
-        @valid="validForm(BUSINESS_NAME, $event)"
+        @valid="emitValidity(BUSINESS_NAME, $event)"
       />
       <person-name
         v-if="showPersonName"
@@ -35,7 +38,7 @@
         :editing="editing"
         :value="value.personName"
         @input="updatePerson($event)"
-        @valid="validForm(PERSON_NAME, $event)"
+        @valid="emitValidity(PERSON_NAME, $event)"
       />
     </v-form>
   </v-card>
@@ -66,6 +69,8 @@ export default createComponent({
 
   setup(props, { emit }) {
 
+    const formIsValid = ref<boolean>(false)
+
     const BUSINESS_NAME = 'businessName'
     const HEADER = 'header'
     const PERSON_NAME = 'personName'
@@ -81,7 +86,7 @@ export default createComponent({
     const partyType = ref(BUSINESS_NAME)
 
     // Callback function for emitting form validity on all sections back to the parent.
-    function validForm(key: string, validElement: boolean) {
+    function emitValidity(key: string, validElement: boolean) {
       validationState[key] = validElement
       let formValid = validationState[HEADER]
       if (partyType.value === BUSINESS_NAME) {
@@ -90,6 +95,7 @@ export default createComponent({
       if (partyType.value === PERSON_NAME) {
         formValid = formValid && validationState[PERSON_NAME]
       }
+      formIsValid.value = formValid
       emit('valid', formValid)
     }
 
@@ -134,12 +140,13 @@ export default createComponent({
       HEADER,
       PERSON_NAME,
       changeType,
+      formIsValid,
       partyType,
       showBusinessName,
       showPersonName,
       updateBusiness,
       updatePerson,
-      validForm
+      emitValidity
     }
   }
 })

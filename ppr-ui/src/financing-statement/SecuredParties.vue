@@ -1,8 +1,8 @@
 <template>
-  <v-form @input="validForm($event)">
+  <v-form>
     <form-section-header label="Secured Parties" />
     <v-container>
-      <p>value {{ value }} </p>
+      <p>value {{ value }} formIsValid {{ formIsValid }}</p>
       <v-list
         v-for="(securedParty, index) in value"
         :key="index"
@@ -12,7 +12,7 @@
             :value="securedParty"
             :editing="editing"
             @input="updateSecuredParty($event, index)"
-            @valid="validForm('securedParty', $event, index)"
+            @valid="emitValidity($event, index)"
           />
         </ppr-list-item>
       </v-list>
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
+import { createComponent, ref } from '@vue/composition-api'
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import PprListItem from '@/views/PprListItem.vue'
 import BaseParty from '@/base-party/BaseParty.vue'
@@ -47,20 +47,22 @@ export default createComponent({
 
   setup(props, { emit }) {
 
-    /*  Create a structure to hold the validation state of the elements of the list
-    */
-    const validationState = {
-      header: false,
-      registeringParty: false
-    }
+    const formIsValid = ref<boolean>(false)
+
+    // Create a structure to hold the validation state of the elements of the list
+    const validationState: boolean[] = new Array(props.value.length).fill(false)
 
     // Callback function for emitting form validity on the header section back to the parent.
-    function validForm(key: string, validElement: boolean) {
-      validationState[key] = validElement
-      const formValid = Object.values(validationState).reduce((accumulator, elementState) => {
-        return accumulator && elementState
-      }, true)
-      emit('valid', formValid)
+    function emitValidity(validElement: boolean, index: number) {
+      // save the validity of the element
+      validationState[index] = validElement
+
+      // Search the array for any false values.
+      // array find returns undefined if no element is false (e.g. all are true)
+      const notValid = validationState.includes(false)
+      console.log('validating secured parties ', validationState, notValid)
+      formIsValid.value = !notValid
+      emit('valid', !notValid)
     }
 
     function updateSecuredParty(newSecuredParty: BasePartyModel, index: number): void {
@@ -71,8 +73,9 @@ export default createComponent({
     }
 
     return {
+      formIsValid,
       updateSecuredParty,
-      validForm,
+      emitValidity,
     }
   }
 })

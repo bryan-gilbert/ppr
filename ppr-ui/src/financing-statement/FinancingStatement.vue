@@ -7,12 +7,15 @@
         @click="editing = !editing"
       />
     </div>
-    <v-form @input="validForm('header', $event)">
+    <v-form
+      :class="{ invalid: !formIsValid }"
+      @input="emitValidity('header', $event)"
+    >
       <secured-parties
         :editing="editing"
         :value="value.securedParties"
         @input="updateSecuredParties"
-        @valid="validForm('securedParties', $event)"
+        @valid="emitValidity('securedParties', $event)"
       />
       <form-section-header label="Type &amp; Duration" />
       <v-container>
@@ -54,7 +57,7 @@
           :value="value.registeringParty"
           :editing="editing"
           @input="updateRegisteringParty"
-          @valid="validForm('registeringParty', $event)"
+          @valid="emitValidity('registeringParty', $event)"
         />
       </v-container>
     </v-form>
@@ -92,6 +95,7 @@ export default createComponent({
   },
 
   setup(props, { emit }) {
+    const formIsValid = ref<boolean>(false)
     const fsTypes = ref<string[]>(FinancingStatementTypeCodeList)
     const life = ref<number>(1)
     const lifeRules = [
@@ -112,11 +116,13 @@ export default createComponent({
     }
 
     // Callback function for emitting form validity on the header section back to the parent.
-    function validForm(key: string, validElement: boolean) {
+    function emitValidity(key: string, validElement: boolean) {
       validationState[key] = validElement
       const formValid = Object.values(validationState).reduce((accumulator, elementState) => {
         return accumulator && elementState
       }, true)
+      console.log('FS emitvalid', key, validElement, validationState, formValid)
+      formIsValid.value = formValid
       emit('valid', formValid)
     }
 
@@ -124,7 +130,8 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         props.value.type,
         props.value.years,
-        newPerson // props.value.registeringParty
+        newPerson, // props.value.registeringParty
+        props.value.securedParties
       ))
     }
 
@@ -142,19 +149,8 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         props.value.type,
         newLife, // props.value.life,
-        props.value.registeringParty))
-    }
-
-    function updateSecuredParty(newSecuredParty: BasePartyModel, index: number): void {
-      console.log('new sp', newSecuredParty.businessName, index)
-      let sp = props.value.securedParties
-      console.log('sp as found', sp)
-      sp[index] = newSecuredParty
-      emit('input', new FinancingStatementModel(
-        props.value.type,
-        props.value.years,
         props.value.registeringParty,
-        sp
+        props.value.securedParties
       ))
     }
 
@@ -163,18 +159,21 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         newType, //props.value.type,
         props.value.years,
-        props.value.registeringParty))
+        props.value.registeringParty,
+        props.value.securedParties
+      ))
     }
 
     return {
       fsTypes,
+      formIsValid,
       life,
       lifeRules,
       updateLife,
       updateRegisteringParty,
       updateSecuredParties,
       updateType,
-      validForm,
+      emitValidity,
     }
   }
 })

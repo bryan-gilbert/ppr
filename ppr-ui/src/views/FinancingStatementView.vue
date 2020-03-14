@@ -74,7 +74,8 @@ export default createComponent({
     // registering party,
     // secured party list with one secured party
     const firstSecuredParty = new BasePartyModel()
-    const securedParties = [firstSecuredParty]
+    const a2ndSecuredParty = new BasePartyModel()
+    const securedParties = [firstSecuredParty, a2ndSecuredParty]
     const fstmt = new FinancingStatementModel(undefined, undefined, undefined, securedParties)
     const financingStatement = ref(fstmt)
 
