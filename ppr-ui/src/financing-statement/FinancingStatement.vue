@@ -1,29 +1,19 @@
 <template>
   <v-card outlined>
     <div>
-      editing {{ editing }}
+      editing {{ editing }} value {{ value }}
       <v-btn
         value="toggle"
         @click="editing = !editing"
       />
     </div>
     <v-form @input="validForm('header', $event)">
-      <form-section-header label="Secured Parties" />
-      <v-container>
-        <v-list
-          v-for="(securedParty, index) in value.securedParties"
-          :key="index"
-        >
-          <ppr-list-item :editing="editing">
-            <base-party
-              :value="securedParty"
-              :editing="editing"
-              @input="updateSecuredParty($event, index)"
-              @valid="validForm('securedParty', $event)"
-            />
-          </ppr-list-item>
-        </v-list>
-      </v-container>
+      <secured-parties
+        :editing="editing"
+        :value="value.securedParties"
+        @input="updateSecuredParties"
+        @valid="validForm('securedParties', $event)"
+      />
       <form-section-header label="Type &amp; Duration" />
       <v-container>
         <div v-if="editing">
@@ -73,21 +63,21 @@
 
 <script lang="ts">
 import { createComponent, ref } from '@vue/composition-api'
+import { BasePartyModel } from '@/base-party/base-party-model'
 import { FinancingStatementModel } from '@/financing-statement/financing-statement-model'
 import { FinancingStatementType, FinancingStatementTypeCodeList } from '@/financing-statement/financing-statement-type'
+import { PersonNameModel } from '@/components/person-name-model'
+import BaseParty from '@/base-party/BaseParty.vue'
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import RegisteringParty from '@/components/RegisteringParty.vue'
-import { PersonNameModel } from '@/components/person-name-model'
-import PprListItem from '@/views/PprListItem.vue'
-import BaseParty from '@/base-party/BaseParty.vue'
-import { BasePartyModel } from '@/base-party/base-party-model'
+import SecuredParties from '@/financing-statement/SecuredParties.vue'
 
 export default createComponent({
   components: {
     BaseParty,
     FormSectionHeader,
-    PprListItem,
-    RegisteringParty
+    RegisteringParty,
+    SecuredParties
   },
   props: {
     editing: {
@@ -117,7 +107,8 @@ export default createComponent({
     */
     const validationState = {
       header: false,
-      registeringParty: false
+      registeringParty: false,
+      securedParties: false
     }
 
     // Callback function for emitting form validity on the header section back to the parent.
@@ -134,6 +125,15 @@ export default createComponent({
         props.value.type,
         props.value.years,
         newPerson // props.value.registeringParty
+      ))
+    }
+
+    function updateSecuredParties(newSecuredParties: BasePartyModel[]): void {
+      emit('input', new FinancingStatementModel(
+        props.value.type,
+        props.value.years,
+        props.value.registeringParty,
+        newSecuredParties
       ))
     }
 
@@ -170,9 +170,9 @@ export default createComponent({
       fsTypes,
       life,
       lifeRules,
-      updateRegisteringParty,
-      updateSecuredParty,
       updateLife,
+      updateRegisteringParty,
+      updateSecuredParties,
       updateType,
       validForm,
     }
