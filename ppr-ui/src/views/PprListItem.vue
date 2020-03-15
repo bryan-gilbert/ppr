@@ -4,11 +4,17 @@
     class="ppr-list-item"
   >
     <v-list-item-content>
-      <v-list-item-title v-if="editing">
+      <v-list-item-title
+        v-if="editing"
+        class="header"
+      >
         <v-container>
           <v-row no-gutters>
-            <v-col md10>
-              Enter the contact information for the <strong>Secured Party</strong>
+            <v-col
+              md10
+              class="header-content"
+            >
+              <slot name="header" />
             </v-col>
             <v-col
               md2
@@ -26,10 +32,13 @@
           </v-row>
         </v-container>
       </v-list-item-title>
-      <v-list-item-subtitle v-if="editing">
-        How should we identify this <strong>Secured Party</strong>?
+      <v-list-item-subtitle
+        v-if="editing"
+        class="header"
+      >
+        <slot name="prompt" />
       </v-list-item-subtitle>
-      <v-container>
+      <v-container class="item-content">
         <slot />
       </v-container>
     </v-list-item-content>
@@ -60,7 +69,6 @@ export default createComponent({
   setup(_, { emit }) {
 
     function remove(index: number): void {
-      console.log('btn click')
       emit('remove', index)
     }
 
@@ -73,37 +81,20 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+.header {
+  padding-left: 1rem;
+}
+.header-content {
+  padding-top: 1.5rem;
+}
+
+
 .v-list-item__content {
   padding-top: 0;
 }
-.container {
-  padding-top: 0;
-}
-.ppr-list-item {
-  border: 1px solid bisque;
-}
-
-.list-card {
-  border: 1px solid bisque;
-}
-
-// Address Block Layout
-.address-block {
-  display: flex;
-}
-
-.address-block__info {
-  flex: 1 1 auto;
-}
-
 .item-title {
   justify-content: flex-end;
   margin-left: auto;
   flex: 0 1 10%;
-}
-
-.push-right {
-  margin-left: auto;
-  align-self: flex-end;
 }
 </style>

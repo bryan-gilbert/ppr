@@ -2,6 +2,7 @@
   <v-card flat>
     <v-form
       :class="{ invalid: !formIsValid }"
+      class="base-party-form"
       @input="emitValidity(HEADER, $event)"
     >
       <v-radio-group
@@ -155,6 +156,9 @@ export default createComponent({
 <style lang="scss" scoped>
 @import "../assets/styles/theme.scss";
 
+.base-party-form {
+  padding: 1rem;
+}
 /* Very preliminary styling of the radio buttons.  This is very temporary */
 .filter-button {
   border: 1px solid black;
