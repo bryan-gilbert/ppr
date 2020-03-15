@@ -23,10 +23,11 @@
           />
         </ppr-list-item>
       </v-list>
+    </v-container>
+    <v-container class="flex-center">
       <v-btn @click="addElement">
-        <span>Add</span>
+        <span>Add new secured party</span>
       </v-btn>
-
     </v-container>
   </v-form>
 </template>
@@ -105,3 +106,11 @@ export default createComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+@import "../assets/styles/theme.scss";
+
+.flex-center {
+  align-items: center;
+}
+</style>

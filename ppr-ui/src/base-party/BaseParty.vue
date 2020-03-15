@@ -4,8 +4,8 @@
     class="base-party-form"
     @input="emitValidity(HEADER, $event)"
   >
-    <div>
-      {{prompt}}
+    <div v-if="editing">
+      {{ prompt }}
     </div>
     <v-container class="flex-center">
       <v-radio-group
@@ -169,7 +169,7 @@ export default createComponent({
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding-top: 0
+  padding-top: 0;
 }
 
 .base-party-form {

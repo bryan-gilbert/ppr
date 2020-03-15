@@ -19,6 +19,7 @@
             <v-col
               md2
               class="item-title"
+              title="Remove"
             >
               <v-btn
                 v-if="listLength >= 2"
