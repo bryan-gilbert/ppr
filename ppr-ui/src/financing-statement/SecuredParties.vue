@@ -17,7 +17,7 @@
           <base-party
             :value="securedParty"
             :editing="editing"
-            prompt="How should we identify this <strong>Secured Party</strong>?"
+            prompt="How should we identify this Secured Party?"
             @input="updateSecuredParty($event, index)"
             @valid="emitValidity($event, index)"
           />

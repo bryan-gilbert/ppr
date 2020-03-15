@@ -8,6 +8,7 @@
       {{ prompt }}
     </div>
     <v-container class="flex-center">
+      <!-- See #724 re pending styling of these radio buttons -->
       <v-radio-group
         v-if="editing"
         v-model="partyType"
