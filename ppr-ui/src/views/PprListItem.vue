@@ -32,12 +32,6 @@
           </v-row>
         </v-container>
       </v-list-item-title>
-      <v-list-item-subtitle
-        v-if="editing"
-        class="header"
-      >
-        <slot name="prompt" />
-      </v-list-item-subtitle>
       <v-container class="item-content">
         <slot />
       </v-container>
@@ -87,7 +81,10 @@ export default createComponent({
 .header-content {
   padding-top: 1.5rem;
 }
-
+.item-content {
+  margin-top: 0;
+  padding-top: 0;
+}
 
 .v-list-item__content {
   padding-top: 0;

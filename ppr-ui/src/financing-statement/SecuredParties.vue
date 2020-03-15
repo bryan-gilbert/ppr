@@ -14,12 +14,10 @@
           <template #header>
             Enter the contact information for this <strong>Secured Party</strong>
           </template>
-          <template #prompt>
-            How should we identify this <strong>Secured Party</strong>?
-          </template>
           <base-party
             :value="securedParty"
             :editing="editing"
+            prompt="How should we identify this <strong>Secured Party</strong>?"
             @input="updateSecuredParty($event, index)"
             @valid="emitValidity($event, index)"
           />

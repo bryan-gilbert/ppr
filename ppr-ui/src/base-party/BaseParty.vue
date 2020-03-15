@@ -1,14 +1,18 @@
 <template>
-  <v-card flat>
-    <v-form
-      :class="{ invalid: !formIsValid }"
-      class="base-party-form"
-      @input="emitValidity(HEADER, $event)"
-    >
+  <v-form
+    :class="{ invalid: !formIsValid }"
+    class="base-party-form"
+    @input="emitValidity(HEADER, $event)"
+  >
+    <div>
+      {{prompt}}
+    </div>
+    <v-container class="flex-center">
       <v-radio-group
         v-if="editing"
         v-model="partyType"
         row
+        class="justify-center"
       >
         <v-radio
           class="filter-button"
@@ -25,24 +29,25 @@
           @change="changeType(PERSON_NAME)"
         />
       </v-radio-group>
-      <business-name
-        v-if="showBusinessName"
-        data-test-id="BaseParty.business"
-        :editing="editing"
-        :value="value.businessName"
-        @input="updateBusiness($event)"
-        @valid="emitValidity(BUSINESS_NAME, $event)"
-      />
-      <person-name
-        v-if="showPersonName"
-        data-test-id="BaseParty.person"
-        :editing="editing"
-        :value="value.personName"
-        @input="updatePerson($event)"
-        @valid="emitValidity(PERSON_NAME, $event)"
-      />
-    </v-form>
-  </v-card>
+    </v-container>
+    <business-name
+      v-if="showBusinessName"
+      data-test-id="BaseParty.business"
+      :editing="editing"
+      :value="value.businessName"
+      @input="updateBusiness($event)"
+      @valid="emitValidity(BUSINESS_NAME, $event)"
+    />
+    <person-name
+      v-if="showPersonName"
+      data-test-id="BaseParty.person"
+      :editing="editing"
+      :value="value.personName"
+      @input="updatePerson($event)"
+      @valid="emitValidity(PERSON_NAME, $event)"
+    />
+  </v-form>
+
 </template>
 
 <script lang="ts">
@@ -61,6 +66,9 @@ export default createComponent({
       default: false,
       required: false,
       type: Boolean
+    },
+    prompt: {
+      type: String
     },
     value: {
       required: true,
@@ -153,16 +161,28 @@ export default createComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<!-- must be unscoped to hide the radio button circles -->
+<style lang="scss">
 @import "../assets/styles/theme.scss";
+
+.flex-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0
+}
 
 .base-party-form {
   padding: 1rem;
 }
-/* Very preliminary styling of the radio buttons.  This is very temporary */
+
 .filter-button {
   border: 1px solid black;
-  width: 20%;
+  padding-right: 2rem;
+  .v-icon {
+    display: none;
+    visibility: hidden;
+  }
 }
 
 .v-item--active {
