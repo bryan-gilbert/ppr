@@ -15,8 +15,10 @@
               class="item-title"
             >
               <v-btn
+                v-if="listLength >= 2"
                 icon
                 color="red"
+                @click="remove(index)"
               >
                 <v-icon>mdi-close-circle-outline</v-icon>
               </v-btn>
@@ -35,31 +37,35 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api'
-import BaseParty from '@/base-party/BaseParty.vue'
-import { BasePartyModel } from '@/base-party/base-party-model'
+import { createComponent } from '@vue/composition-api'
 
 
 export default createComponent({
-  components: { BaseParty },
   props: {
     editing: {
       default: false,
       required: false,
       type: Boolean
+    },
+    listLength: {
+      required: true,
+      type: Number
+    },
+    index: {
+      required: true,
+      type: Number
     }
   },
 
-  setup() {
+  setup(_, { emit }) {
 
-    const securedParty = ref(new BasePartyModel())
-
-    function updateSecuredParty(newValue: BasePartyModel): void {
-      console.log('bp', newValue)
+    function remove(index: number): void {
+      console.log('btn click')
+      emit('remove', index)
     }
+
     return {
-      securedParty,
-      updateSecuredParty
+      remove
     }
   }
 })

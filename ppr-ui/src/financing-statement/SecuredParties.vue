@@ -2,12 +2,15 @@
   <v-form>
     <form-section-header label="Secured Parties" />
     <v-container>
-      <p>value {{ value }} formIsValid {{ formIsValid }}</p>
-      <v-list
-        v-for="(securedParty, index) in value"
-        :key="index"
-      >
-        <ppr-list-item :editing="editing">
+      <v-list>
+        <ppr-list-item
+          v-for="(securedParty, index) in value"
+          :key="index"
+          :editing="editing"
+          :index="index"
+          :list-length="value.length"
+          @remove="removeElement"
+        >
           <base-party
             :value="securedParty"
             :editing="editing"
@@ -16,15 +19,19 @@
           />
         </ppr-list-item>
       </v-list>
+      <v-btn @click="addElement">
+        <span>Add</span>
+      </v-btn>
+
     </v-container>
   </v-form>
 </template>
 
 <script lang="ts">
 import { createComponent, ref } from '@vue/composition-api'
+import BaseParty from '@/base-party/BaseParty.vue'
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import PprListItem from '@/views/PprListItem.vue'
-import BaseParty from '@/base-party/BaseParty.vue'
 import { BasePartyModel } from '@/base-party/base-party-model'
 
 export default createComponent({
@@ -60,22 +67,36 @@ export default createComponent({
       // Search the array for any false values.
       // array find returns undefined if no element is false (e.g. all are true)
       const notValid = validationState.includes(false)
-      console.log('validating secured parties ', validationState, notValid)
       formIsValid.value = !notValid
       emit('valid', !notValid)
     }
 
     function updateSecuredParty(newSecuredParty: BasePartyModel, index: number): void {
       let sp = props.value
-      console.log('sp as found', sp)
       sp[index] = newSecuredParty
       emit('input', sp)
     }
 
+    function addElement() {
+      const newSecuredParty = new BasePartyModel()
+      let sp = props.value
+      sp.push(newSecuredParty)
+      emit('input', sp)
+    }
+
+    function removeElement(index: number) {
+      console.log('removeElement', index)
+      let sp = props.value
+      sp.splice(index, 1)
+      emit('input', sp)
+    }
+
     return {
+      addElement,
       formIsValid,
       updateSecuredParty,
       emitValidity,
+      removeElement
     }
   }
 })

@@ -1,16 +1,15 @@
 <template>
   <v-card outlined>
     <div>
-      editing {{ editing }} value {{ value }}
+      <!--
+        editing {{ editing }} value {{ value }}
+        -->
       <v-btn
         value="toggle"
         @click="editing = !editing"
       />
     </div>
-    <v-form
-      :class="{ invalid: !formIsValid }"
-      @input="emitValidity('header', $event)"
-    >
+    <v-form @input="emitValidity('header', $event)">
       <secured-parties
         :editing="editing"
         :value="value.securedParties"
@@ -121,7 +120,6 @@ export default createComponent({
       const formValid = Object.values(validationState).reduce((accumulator, elementState) => {
         return accumulator && elementState
       }, true)
-      console.log('FS emitvalid', key, validElement, validationState, formValid)
       formIsValid.value = formValid
       emit('valid', formValid)
     }
@@ -136,6 +134,7 @@ export default createComponent({
     }
 
     function updateSecuredParties(newSecuredParties: BasePartyModel[]): void {
+      console.log(newSecuredParties)
       emit('input', new FinancingStatementModel(
         props.value.type,
         props.value.years,
