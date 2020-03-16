@@ -63,6 +63,7 @@ export default createComponent({
     const formIsValid = ref<boolean>(false)
 
     // Create a structure to hold the validation state of the elements of the list
+    // TODO consider if this needs to be reactive
     const validationState: boolean[] = new Array(props.value.length).fill(false)
 
     // Callback function for emitting form validity on the header section back to the parent.
