@@ -1,6 +1,7 @@
 <template>
   <v-form>
     <form-section-header label="Secured Parties" />
+    <div> {{ value }} </div>
     <v-container>
       <v-list>
         <ppr-list-item
@@ -68,30 +69,29 @@ export default createComponent({
     function emitValidity(validElement: boolean, index: number) {
       // save the validity of the element
       validationState[index] = validElement
-
-      // Search the array for any false values.
-      // array find returns undefined if no element is false (e.g. all are true)
+      // Search the array for any false values. NB find returns undefined all are true
       const notValid = validationState.includes(false)
       formIsValid.value = !notValid
       emit('valid', !notValid)
     }
 
+    // when emitting the array of parties be sure to clone the array or else this component will
+    // not see the change. The reactive system needs a new array and not just a change inside the array.
+
     function updateSecuredParty(newSecuredParty: BasePartyModel, index: number): void {
-      let sp = props.value
+      let sp = [...props.value]
       sp[index] = newSecuredParty
       emit('input', sp)
     }
 
     function addElement() {
-      const newSecuredParty = new BasePartyModel()
-      let sp = props.value
-      sp.push(newSecuredParty)
+      let sp = [...props.value]
+      sp.push(new BasePartyModel())
       emit('input', sp)
     }
 
     function removeElement(index: number) {
-      console.log('removeElement', index)
-      let sp = props.value
+      let sp = [...props.value]
       sp.splice(index, 1)
       emit('input', sp)
     }

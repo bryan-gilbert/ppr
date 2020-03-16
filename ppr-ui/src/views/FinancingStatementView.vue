@@ -22,8 +22,9 @@
           </div>
           <v-form>
             <financing-statement
-              v-model="financingStatement"
+              :value="financingStatement"
               :editing="editing"
+              @input="updateFinancingModel"
               @valid="formValid = $event"
             />
             <v-btn
@@ -44,7 +45,7 @@
             </p>
           </div>
           <financing-statement
-            v-model="financingStatement"
+            :value="financingStatement"
             :editing="editing"
           />
         </section>
@@ -74,8 +75,8 @@ export default createComponent({
     // registering party,
     // secured party list with one secured party
     const firstSecuredParty = new BasePartyModel()
-    const a2ndSecuredParty = new BasePartyModel()
-    const securedParties = [firstSecuredParty, a2ndSecuredParty]
+    // const a2ndSecuredParty = new BasePartyModel()
+    const securedParties = [firstSecuredParty]
     const fstmt = new FinancingStatementModel(undefined, undefined, undefined, securedParties)
     const financingStatement = ref(fstmt)
 
@@ -109,11 +110,17 @@ export default createComponent({
       editing.value = true
     }
 
+    function updateFinancingModel(newValue: FinancingStatementModel) {
+      console.log('updateFinancingModel', newValue.securedParties[0].toString)
+      financingStatement.value = newValue
+    }
+
     return {
       editing,
       financingStatement,
       formValid,
-      submit
+      submit,
+      updateFinancingModel
     }
   }
 })
