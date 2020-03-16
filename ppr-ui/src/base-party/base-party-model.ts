@@ -28,10 +28,14 @@ export class BasePartyModel {
     businessName: BusinessNameModel = new BusinessNameModel(),
     personName: PersonNameModel = new PersonNameModel()
   ) {
+    console.log('construct bp model', businessName, personName)
     this._businessName = businessName
     this._personName = personName
   }
 
+  public toString(): string {
+    return 'B ' + this.businessName.businessName + ' P ' + this.personName.last
+  }
   /**
    * Gets the business name of the party
    */

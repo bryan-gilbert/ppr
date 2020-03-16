@@ -1,10 +1,20 @@
 <template>
-  <v-card flat>
-    <v-form @input="validForm(HEADER, $event)">
+  <v-form
+    :class="{ invalid: !formIsValid }"
+    class="base-party-form"
+    @input="emitValidity(HEADER, $event)"
+  >
+    <div v-if="editing">
+      <div> {{ value }} json: businessName {{ value.businessName.toJson() }} personName {{ value.personName.toJson() }} </div>
+      {{ prompt }}
+    </div>
+    <v-container class="flex-center">
+      <!-- See #724 re pending styling of these radio buttons -->
       <v-radio-group
         v-if="editing"
         v-model="partyType"
         row
+        class="justify-center"
       >
         <v-radio
           class="filter-button"
@@ -21,24 +31,25 @@
           @change="changeType(PERSON_NAME)"
         />
       </v-radio-group>
-      <business-name
-        v-if="showBusinessName"
-        data-test-id="BaseParty.business"
-        :editing="editing"
-        :value="value.businessName"
-        @input="updateBusiness($event)"
-        @valid="validForm(BUSINESS_NAME, $event)"
-      />
-      <person-name
-        v-if="showPersonName"
-        data-test-id="BaseParty.person"
-        :editing="editing"
-        :value="value.personName"
-        @input="updatePerson($event)"
-        @valid="validForm(PERSON_NAME, $event)"
-      />
-    </v-form>
-  </v-card>
+    </v-container>
+    <business-name
+      v-if="showBusinessName"
+      data-test-id="BaseParty.business"
+      :editing="editing"
+      :value="value.businessName"
+      @input="updateBusiness($event)"
+      @valid="emitValidity(BUSINESS_NAME, $event)"
+    />
+    <person-name
+      v-if="showPersonName"
+      data-test-id="BaseParty.person"
+      :editing="editing"
+      :value="value.personName"
+      @input="updatePerson($event)"
+      @valid="emitValidity(PERSON_NAME, $event)"
+    />
+  </v-form>
+
 </template>
 
 <script lang="ts">
@@ -58,6 +69,9 @@ export default createComponent({
       required: false,
       type: Boolean
     },
+    prompt: {
+      type: String
+    },
     value: {
       required: true,
       type: BasePartyModel
@@ -65,6 +79,8 @@ export default createComponent({
   },
 
   setup(props, { emit }) {
+
+    const formIsValid = ref<boolean>(false)
 
     const BUSINESS_NAME = 'businessName'
     const HEADER = 'header'
@@ -77,11 +93,12 @@ export default createComponent({
     validationState[HEADER] = false
     validationState[PERSON_NAME] = false
 
+    let type = props.value.personName.first || props.value.personName.last ? PERSON_NAME : BUSINESS_NAME
     // partyType tracks the active name. Start showing one model, say, the business name
-    const partyType = ref(BUSINESS_NAME)
+    const partyType = ref(type)
 
     // Callback function for emitting form validity on all sections back to the parent.
-    function validForm(key: string, validElement: boolean) {
+    function emitValidity(key: string, validElement: boolean) {
       validationState[key] = validElement
       let formValid = validationState[HEADER]
       if (partyType.value === BUSINESS_NAME) {
@@ -90,14 +107,20 @@ export default createComponent({
       if (partyType.value === PERSON_NAME) {
         formValid = formValid && validationState[PERSON_NAME]
       }
+      formIsValid.value = formValid
       emit('valid', formValid)
     }
 
-    const showBusinessName = computed((): boolean => partyType.value === BUSINESS_NAME)
-    const showPersonName = computed((): boolean => partyType.value === PERSON_NAME)
+    const showBusinessName = computed((): boolean => {
+      return partyType.value === BUSINESS_NAME || !!props.value.businessName.businessName
+    })
+    const showPersonName = computed((): boolean => {
+      return partyType.value === PERSON_NAME || !!props.value.personName.first || !!props.value.personName.last
+    })
 
     // Callback function for emitting the business name model change back to the parent.
     function updateBusiness(newValue: BusinessNameModel): void {
+      console.log('updateBusiness', newValue)
       emit('input', new BasePartyModel(
         newValue,
         props.value.personName
@@ -113,19 +136,11 @@ export default createComponent({
     }
 
     // Callback function for tracking the current name model.
-    // Intentional side effect to clear the non-active model.
+    // Intentional side effect to clear both model.
     function changeType(type: string) {
       partyType.value = type
-      switch (type) {
-        case BUSINESS_NAME:
-          // Activating the business name component so reset person to empty
-          updatePerson(new PersonNameModel())
-          break
-        case PERSON_NAME:
-          // Activating the person name component so reset business to empty
-          updateBusiness(new BusinessNameModel())
-          break
-      }
+      const model = new BasePartyModel()
+      emit('input', model)
     }
 
     return {
@@ -133,24 +148,40 @@ export default createComponent({
       HEADER,
       PERSON_NAME,
       changeType,
+      formIsValid,
       partyType,
       showBusinessName,
       showPersonName,
       updateBusiness,
       updatePerson,
-      validForm
+      emitValidity
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
+<!-- must be unscoped to hide the radio button circles -->
+<style lang="scss">
 @import "../assets/styles/theme.scss";
 
-/* Very preliminary styling of the radio buttons.  This is very temporary */
+.flex-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+}
+
+.base-party-form {
+  padding: 1rem;
+}
+
 .filter-button {
   border: 1px solid black;
-  width: 20%;
+  padding-right: 2rem;
+  .v-icon {
+    display: none;
+    visibility: hidden;
+  }
 }
 
 .v-item--active {

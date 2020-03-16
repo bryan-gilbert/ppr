@@ -1,6 +1,19 @@
 <template>
   <v-card outlined>
-    <v-form @input="validForm('header', $event)">
+    <div>
+      editing {{ editing }} value {{ value }}
+      <v-btn
+        value="toggle"
+        @click="editing = !editing"
+      />
+    </div>
+    <v-form @input="emitValidity('header', $event)">
+      <secured-parties
+        :editing="editing"
+        :value="value.securedParties"
+        @input="updateSecuredParties"
+        @valid="emitValidity('securedParties', $event)"
+      />
       <form-section-header label="Type &amp; Duration" />
       <v-container>
         <div v-if="editing">
@@ -35,12 +48,13 @@
         </div>
       </v-container>
       <form-section-header label="Registering Party" />
+
       <v-container>
         <registering-party
           :value="value.registeringParty"
           :editing="editing"
           @input="updateRegisteringParty"
-          @valid="validForm('registeringParty', $event)"
+          @valid="emitValidity('registeringParty', $event)"
         />
       </v-container>
     </v-form>
@@ -49,16 +63,21 @@
 
 <script lang="ts">
 import { createComponent, ref } from '@vue/composition-api'
+import { BasePartyModel } from '@/base-party/base-party-model'
 import { FinancingStatementModel } from '@/financing-statement/financing-statement-model'
 import { FinancingStatementType, FinancingStatementTypeCodeList } from '@/financing-statement/financing-statement-type'
+import { PersonNameModel } from '@/components/person-name-model'
+import BaseParty from '@/base-party/BaseParty.vue'
 import FormSectionHeader from '@/components/FormSectionHeader.vue'
 import RegisteringParty from '@/components/RegisteringParty.vue'
-import { PersonNameModel } from '@/components/person-name-model'
+import SecuredParties from '@/financing-statement/SecuredParties.vue'
 
 export default createComponent({
   components: {
+    BaseParty,
     FormSectionHeader,
-    RegisteringParty
+    RegisteringParty,
+    SecuredParties
   },
   props: {
     editing: {
@@ -73,6 +92,7 @@ export default createComponent({
   },
 
   setup(props, { emit }) {
+    const formIsValid = ref<boolean>(false)
     const fsTypes = ref<string[]>(FinancingStatementTypeCodeList)
     const life = ref<number>(1)
     const lifeRules = [
@@ -88,15 +108,17 @@ export default createComponent({
     */
     const validationState = {
       header: false,
-      registeringParty: false
+      registeringParty: false,
+      securedParties: false
     }
 
     // Callback function for emitting form validity on the header section back to the parent.
-    function validForm(key: string, validElement: boolean) {
+    function emitValidity(key: string, validElement: boolean) {
       validationState[key] = validElement
       const formValid = Object.values(validationState).reduce((accumulator, elementState) => {
         return accumulator && elementState
       }, true)
+      formIsValid.value = formValid
       emit('valid', formValid)
     }
 
@@ -104,7 +126,18 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         props.value.type,
         props.value.years,
-        newPerson // props.value.registeringParty
+        newPerson, // props.value.registeringParty
+        props.value.securedParties
+      ))
+    }
+
+    function updateSecuredParties(newSecuredParties: BasePartyModel[]): void {
+      console.log('updateSecuredParties', newSecuredParties)
+      emit('input', new FinancingStatementModel(
+        props.value.type,
+        props.value.years,
+        props.value.registeringParty,
+        newSecuredParties
       ))
     }
 
@@ -113,7 +146,9 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         props.value.type,
         newLife, // props.value.life,
-        props.value.registeringParty))
+        props.value.registeringParty,
+        props.value.securedParties
+      ))
     }
 
     // Callback function for emitting model changes made to the FS type
@@ -121,17 +156,21 @@ export default createComponent({
       emit('input', new FinancingStatementModel(
         newType, //props.value.type,
         props.value.years,
-        props.value.registeringParty))
+        props.value.registeringParty,
+        props.value.securedParties
+      ))
     }
 
     return {
       fsTypes,
+      formIsValid,
       life,
       lifeRules,
-      updateRegisteringParty,
       updateLife,
+      updateRegisteringParty,
+      updateSecuredParties,
       updateType,
-      validForm,
+      emitValidity,
     }
   }
 })
