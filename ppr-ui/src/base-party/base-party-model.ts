@@ -33,6 +33,9 @@ export class BasePartyModel {
     this._personName = personName
   }
 
+  public toString(): string {
+    return 'B ' + this.businessName.businessName + ' P ' + this.personName.last
+  }
   /**
    * Gets the business name of the party
    */

@@ -1,9 +1,7 @@
 <template>
   <v-card outlined>
     <div>
-      <!--
-        editing {{ editing }} value {{ value }}
-        -->
+      editing {{ editing }} value {{ value }}
       <v-btn
         value="toggle"
         @click="editing = !editing"
@@ -134,7 +132,7 @@ export default createComponent({
     }
 
     function updateSecuredParties(newSecuredParties: BasePartyModel[]): void {
-      console.log(newSecuredParties)
+      console.log('updateSecuredParties', newSecuredParties)
       emit('input', new FinancingStatementModel(
         props.value.type,
         props.value.years,

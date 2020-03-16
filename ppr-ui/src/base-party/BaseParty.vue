@@ -5,6 +5,7 @@
     @input="emitValidity(HEADER, $event)"
   >
     <div v-if="editing">
+      <div> {{ value }} json: businessName {{ value.businessName.toJson() }} personName {{ value.personName.toJson() }} </div>
       {{ prompt }}
     </div>
     <v-container class="flex-center">
@@ -92,8 +93,9 @@ export default createComponent({
     validationState[HEADER] = false
     validationState[PERSON_NAME] = false
 
+    let type = props.value.personName.first || props.value.personName.last ? PERSON_NAME : BUSINESS_NAME
     // partyType tracks the active name. Start showing one model, say, the business name
-    const partyType = ref(BUSINESS_NAME)
+    const partyType = ref(type)
 
     // Callback function for emitting form validity on all sections back to the parent.
     function emitValidity(key: string, validElement: boolean) {
@@ -109,8 +111,12 @@ export default createComponent({
       emit('valid', formValid)
     }
 
-    const showBusinessName = computed((): boolean => partyType.value === BUSINESS_NAME)
-    const showPersonName = computed((): boolean => partyType.value === PERSON_NAME)
+    const showBusinessName = computed((): boolean => {
+      return partyType.value === BUSINESS_NAME || !!props.value.businessName.businessName
+    })
+    const showPersonName = computed((): boolean => {
+      return partyType.value === PERSON_NAME || !!props.value.personName.first || !!props.value.personName.last
+    })
 
     // Callback function for emitting the business name model change back to the parent.
     function updateBusiness(newValue: BusinessNameModel): void {
@@ -130,19 +136,11 @@ export default createComponent({
     }
 
     // Callback function for tracking the current name model.
-    // Intentional side effect to clear the non-active model.
+    // Intentional side effect to clear both model.
     function changeType(type: string) {
       partyType.value = type
-      switch (type) {
-        case BUSINESS_NAME:
-          // Activating the business name component so reset person to empty
-          updatePerson(new PersonNameModel())
-          break
-        case PERSON_NAME:
-          // Activating the person name component so reset business to empty
-          updateBusiness(new BusinessNameModel())
-          break
-      }
+      const model = new BasePartyModel()
+      emit('input', model)
     }
 
     return {
